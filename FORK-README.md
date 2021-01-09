@@ -5,7 +5,7 @@ This fork is to add support for Azure Storage Blobs as data file URLs.
 # The Approach
 * Follows the same pattern for S3 and GCP storage support.
   * Effectively a switch statement based on the URL
-  * Use cloud platform specific code to generate a pre-signed URL
+  * Use cloud platform specific code to generate a pre-signed URL on download
 
 # Known Issues
 
