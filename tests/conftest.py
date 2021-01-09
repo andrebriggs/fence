@@ -471,6 +471,20 @@ def indexd_client(app, request):
             "created_date": "",
             "updated_date": "",
         }
+    elif request.param == "https_azure":
+        record = {
+            "did": "",
+            "baseid": "",
+            "rev": "",
+            "size": 10,
+            "file_name": "file2",
+            "urls": ["https://fakeaccount.blob.core.windows.net/container5/blob6"],
+            "hashes": {},
+            "acl": ["phs000178", "phs000218"],
+            "form": "",
+            "created_date": "",
+            "updated_date": "",
+        }
     elif request.param == "nonexistent_guid":
         # throw an error when requested to simulate the GUID not existing
         # TODO (rudyardrichter, 2018-11-03): consolidate things needing to do this patch
@@ -506,6 +520,26 @@ def indexd_client(app, request):
             "updated_date": "",
         }
 
+    class FakeAzureCrendential(object):
+        def __init__(self):
+            self.account_key = "FakefakeAccountKey"
+    class FakeBlobServiceClient(object):
+
+        def __init__(self):
+            self.account_name = "fakeAccountName"
+            self.credential = FakeAzureCrendential()
+
+        @classmethod
+        def from_connection_string(cls, conn_str, credential=None,**kwargs):
+            return FakeBlobServiceClient()
+        
+    mock_blob_client_patcher = patch(
+        "fence.blueprints.data.indexd.BlobServiceClient", return_value=FakeBlobServiceClient()
+    )
+    mock_generate_blob_sas_patcher = patch(
+        "fence.blueprints.data.indexd.generate_blob_sas", return_value="FAKE_SharedAccessSignature_STRING"
+    )
+
     # TODO (rudyardrichter, 2018-11-03): consolidate things needing to do this patch
     indexd_patcher = patch(
         "fence.blueprints.data.indexd.IndexedFile.index_document", record
@@ -515,6 +549,8 @@ def indexd_client(app, request):
     )
     mocker.add_mock(indexd_patcher)
     mocker.add_mock(blank_patcher)
+    mocker.add_mock(mock_blob_client_patcher)
+    mocker.add_mock(mock_generate_blob_sas_patcher)
 
     output = {
         "mocker": mocker,

@@ -275,6 +275,8 @@ def app_config(
 
     _check_s3_buckets(app)
 
+    # _check_azure_storage(app) # TODO: have some inital checking
+
 
 def _setup_data_endpoint_and_boto(app):
     if "AWS_CREDENTIALS" in config and len(config["AWS_CREDENTIALS"]) > 0:

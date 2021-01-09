@@ -20,7 +20,7 @@ from cirrus import GoogleCloudManager
 
 
 @pytest.mark.parametrize(
-    "indexd_client", ["gs", "s3", "gs_acl", "s3_acl", "s3_external"], indirect=True
+    "indexd_client", ["gs", "s3", "gs_acl", "s3_acl", "s3_external", "https_azure"], indirect=True
 )
 def test_indexd_download_file(
     client,
